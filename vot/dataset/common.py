@@ -1,5 +1,6 @@
 """This module contains functionality for reading sequences from the storage using VOT compatible format."""
 
+import ast
 import os
 import glob
 import logging
@@ -117,6 +118,16 @@ def _read_data(metadata):
             value = [float(line.strip()) for line in filehandle.readlines()]
             while not len(value) >= length:
                 value.append(0.0)
+            values[valuename] = value
+
+    valuefiles = glob.glob(os.path.join(root, '*.svalue'))
+
+    for valuefile in valuefiles:
+        with open(valuefile, 'r') as filehandle:
+            valuename = os.path.splitext(os.path.basename(valuefile))[0]
+            value = [line.strip() for line in filehandle.readlines()]
+            while not len(value) >= length:
+                value.append("")
             values[valuename] = value
 
     for name, tag in tags.items():
